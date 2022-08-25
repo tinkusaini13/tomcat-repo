@@ -1,6 +1,7 @@
 ---
 - name: Install Apache Tomcat9 using ansible
   become: true
+  become_method: sudo
   hosts: all
   tasks: 
     - name: Create tomcat Group
