@@ -1,0 +1,60 @@
+---
+- name: Install Apache Tomcat9 using ansible
+  become: true
+  hosts: localhost
+  tasks:
+    - name: Create tomcat Group
+      group:
+        name: tomcat
+        state: present
+
+    - name: Create tomcat user
+      user:
+        name: tomcat
+        group: tomcat
+        home: /home/tomcat
+        createhome: yes
+        system: yes
+        state: present
+
+
+    - name: Download & unarchive tomcat9
+      unarchive:
+        src: https://dlcdn.apache.org/tomcat/tomcat-10/v10.0.23/bin/apache-tomcat-10.0.23.tar.gz
+        dest: /home/tomcat
+        remote_src: yes
+        extra_opts: [--strip-components=1]
+
+    - name: Change ownership of tomcat directory
+      file:
+        path:  /home/tomcat
+        owner: tomcat
+        group: tomcat
+        mode:  644
+        recurse: yes
+        state: directory
+
+
+    - name: Change file  permissions
+      file:
+        path: /home/tomcat/bin
+        owner: tomcat
+        group: tomcat
+        mode:  u=x
+        recurse: yes
+
+
+    - name: Ensure user/group and password set
+      blockinfile:
+        path: /home/tomcat/conf/tomcat-users.xml
+        block: |
+           <role rolename="manager-gui" />
+           <user username="tomcat" password="" roles="manager-gui" />
+           <role rolename="admin-gui" />
+           <user username="admin" password="" \
+           roles="manager-gui,admin-gui"/>
+           </tomcat-users>
+
+
+    - name: Start tomcat sever
+      shell: /home/tomcat/bin/startup.sh
