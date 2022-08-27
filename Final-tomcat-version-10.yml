@@ -1,5 +1,5 @@
 ---
-- name: Install Apache Tomcat9 using ansible
+- name: Install Apache Tomcat10 using ansible
   become: true
   hosts: localhost
   tasks:
@@ -18,7 +18,7 @@
         state: present
 
 
-    - name: Download & unarchive tomcat9
+    - name: Download & unarchive tomcat10
       unarchive:
         src: https://dlcdn.apache.org/tomcat/tomcat-10/v10.0.23/bin/apache-tomcat-10.0.23.tar.gz
         dest: /home/tomcat
